@@ -57,20 +57,26 @@ public class EmployeeService {
     public Employee updateEmployeeStatus(Long id, String status) {
         Employee employee = getEmployeeById(id);
 
-        if (!status.equals("Active") && !status.equals("Inactive")) {
+        String normalizedStatus = status.trim();
+
+        if (normalizedStatus.equalsIgnoreCase("Active")) {
+            employee.setStatus("Active");
+        } else if (normalizedStatus.equalsIgnoreCase("Inactive")) {
+            employee.setStatus("Inactive");
+        } else {
             throw new IllegalArgumentException(
                     "Status must be Active or Inactive"
             );
         }
-
-        employee.setStatus(status);
+        
         return employee;
     }
 
     public List<Employee> getEmployeesByDepartment(String department) {
         return employees.values().stream()
                 .filter(employee ->
-                        employee.getDepartment().equalsIgnoreCase(department))
+                        employee.getDepartment()
+                                .equalsIgnoreCase(department.trim()))
                 .collect(Collectors.toList());
     }
 }
