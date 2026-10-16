@@ -1,0 +1,36 @@
+package com.jtronix.employee_api.service;
+
+import com.jtronix.employee_api.exception.EmployeeNotFoundException;
+import com.jtronix.employee_api.model.Employee;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Service
+public class EmployeeService {
+
+    private final Map<Long, Employee> employees = new ConcurrentHashMap<>();
+
+    public EmployeeService() {
+        employees.put(1L, new Employee(1L, "Rahul Sharma", "Engineering", "Active"));
+        employees.put(2L, new Employee(2L, "Priya Patel", "HR", "Active"));
+        employees.put(3L, new Employee(3L, "Amit Verma", "Engineering", "Inactive"));
+    }
+
+    public List<Employee> getAllEmployees() {
+        return new ArrayList<>(employees.values());
+    }
+
+    public Employee getEmployeeById(Long id) {
+        Employee employee = employees.get(id);
+
+        if (employee == null) {
+            throw new EmployeeNotFoundException(id);
+        }
+
+        return employee;
+    }
+}
