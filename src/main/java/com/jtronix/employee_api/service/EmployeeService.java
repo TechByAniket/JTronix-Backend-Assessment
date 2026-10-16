@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -51,5 +52,25 @@ public class EmployeeService {
         employees.put(id, employee);
 
         return employee;
+    }
+
+    public Employee updateEmployeeStatus(Long id, String status) {
+        Employee employee = getEmployeeById(id);
+
+        if (!status.equals("Active") && !status.equals("Inactive")) {
+            throw new IllegalArgumentException(
+                    "Status must be Active or Inactive"
+            );
+        }
+
+        employee.setStatus(status);
+        return employee;
+    }
+
+    public List<Employee> getEmployeesByDepartment(String department) {
+        return employees.values().stream()
+                .filter(employee ->
+                        employee.getDepartment().equalsIgnoreCase(department))
+                .collect(Collectors.toList());
     }
 }
