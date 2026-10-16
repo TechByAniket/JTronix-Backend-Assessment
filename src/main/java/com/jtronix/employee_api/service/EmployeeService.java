@@ -1,5 +1,6 @@
 package com.jtronix.employee_api.service;
 
+import com.jtronix.employee_api.dto.CreateEmployeeRequest;
 import com.jtronix.employee_api.exception.EmployeeNotFoundException;
 import com.jtronix.employee_api.model.Employee;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class EmployeeService {
@@ -30,6 +32,23 @@ public class EmployeeService {
         if (employee == null) {
             throw new EmployeeNotFoundException(id);
         }
+
+        return employee;
+    }
+
+    private final AtomicLong idCounter = new AtomicLong(3);
+
+    public Employee createEmployee(CreateEmployeeRequest request) {
+        Long id = idCounter.incrementAndGet();
+
+        Employee employee = new Employee(
+                id,
+                request.getName().trim(),
+                request.getDepartment().trim(),
+                "Active"
+        );
+
+        employees.put(id, employee);
 
         return employee;
     }
